@@ -1,1 +1,171 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZAKZZ DESIGN</title>
 
+<style>
+body{
+    margin:0;
+    font-family:'Segoe UI',sans-serif;
+    background:linear-gradient(135deg,#f5f5f5,#dcdcdc);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+}
+
+.container{
+    background:white;
+    width:360px;
+    padding:30px;
+    border-radius:25px;
+    box-shadow:0 20px 40px rgba(0,0,0,0.1);
+    text-align:center;
+}
+
+h2{color:#333;margin-bottom:5px;}
+p{color:#777;font-size:14px;}
+
+.link-btn{
+    display:block;
+    background:#eeeeee;
+    color:#333;
+    text-decoration:none;
+    padding:12px;
+    margin:10px 0;
+    border-radius:30px;
+    font-weight:bold;
+    transition:0.3s;
+    position:relative;
+}
+
+.link-btn:hover{
+    background:#d6d6d6;
+    transform:scale(1.05);
+}
+
+.delete-btn{
+    position:absolute;
+    right:15px;
+    top:8px;
+    cursor:pointer;
+    font-size:14px;
+    color:red;
+    display:none;
+}
+
+.edit-mode .delete-btn{
+    display:inline;
+}
+
+.edit-panel{
+    display:none;
+    margin-top:15px;
+}
+
+input{
+    width:90%;
+    padding:8px;
+    margin:5px 0;
+    border-radius:20px;
+    border:1px solid #ccc;
+}
+
+button{
+    background:#333;
+    color:white;
+    padding:8px 15px;
+    border:none;
+    border-radius:20px;
+    cursor:pointer;
+    margin-top:5px;
+}
+
+.owner-toggle{
+    font-size:12px;
+    margin-top:10px;
+    color:#aaa;
+    cursor:pointer;
+}
+
+.footer{
+    margin-top:15px;
+    font-size:12px;
+    color:#aaa;
+}
+</style>
+</head>
+<body>
+
+<div class="container" id="mainBox">
+    <h2>ZAKZZ DESIGN</h2>
+    <p>Official Links</p>
+
+    <div id="linkContainer"></div>
+
+    <div class="edit-panel" id="editPanel">
+        <input type="text" id="linkName" placeholder="Nama Link">
+        <input type="text" id="linkURL" placeholder="URL https://...">
+        <button onclick="addLink()">Tambah Link</button>
+    </div>
+
+    <div class="owner-toggle" onclick="toggleOwnerMode()">⚙ Owner Mode</div>
+
+    <div class="footer">© 2026 ZAKZZ DESIGN</div>
+</div>
+
+<script>
+
+let links = JSON.parse(localStorage.getItem("zakzzLinks")) || [
+    {name:"YouTube", url:"https://youtube.com"},
+    {name:"Instagram", url:"https://instagram.com"},
+    {name:"WhatsApp", url:"https://wa.me/6281234567890"},
+    {name:"TikTok", url:"https://tiktok.com"}
+];
+
+function renderLinks(){
+    let container = document.getElementById("linkContainer");
+    container.innerHTML = "";
+    links.forEach((link,index)=>{
+        let a = document.createElement("a");
+        a.href = link.url;
+        a.target="_blank";
+        a.className="link-btn";
+        a.innerHTML = link.name + 
+        `<span class="delete-btn" onclick="deleteLink(${index})">✖</span>`;
+        container.appendChild(a);
+    });
+    localStorage.setItem("zakzzLinks", JSON.stringify(links));
+}
+
+function addLink(){
+    let name = document.getElementById("linkName").value;
+    let url = document.getElementById("linkURL").value;
+    if(name && url){
+        links.push({name,url});
+        renderLinks();
+        document.getElementById("linkName").value="";
+        document.getElementById("linkURL").value="";
+    }
+}
+
+function deleteLink(index){
+    links.splice(index,1);
+    renderLinks();
+}
+
+function toggleOwnerMode(){
+    let box = document.getElementById("mainBox");
+    let panel = document.getElementById("editPanel");
+    box.classList.toggle("edit-mode");
+    panel.style.display = panel.style.display === "block" ? "none" : "block";
+}
+
+renderLinks();
+
+</script>
+
+</body>
+</html>
